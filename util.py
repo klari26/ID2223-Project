@@ -16,7 +16,8 @@ def get_historical_weather(location, start_date, end_date, longitude, latitude):
     retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
     openmeteo = openmeteo_requests.Client(session = retry_session)
 
-    # Choose this
+    # https://www.ortovox.com/en/safety-academy-lab-snow/01-avalanche-basics/avalanche-factors?srsltid=AfmBOoqL1e3qn7kWWD_iXVO97V9wTVBficdosC_jTjJSMCfKDkU7MTjf
+    # Critical amount of new snow + wind + temperature + precipitation
     daily_variables = [
         "temperature_2m_mean",
         "precipitation_sum",
