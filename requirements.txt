@@ -15,4 +15,8 @@ Faker
 invoke
 python-dotenv
 python-dateutil
+rasterio
+shapely
+pyproj
+tqdm
 #feldera==0.41
