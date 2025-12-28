@@ -10,3 +10,4 @@ __pycache__/
 .ipynb_checkpoints/
 DTM10_UTM33_20251219.zip
 DTM10_UTM33_20251219/
+.cache.sqlite
