@@ -22,6 +22,21 @@ resort_locations = {
     "Bjorli Ski": (62.37332305036026, 8.277476069954428)
 }
 
+resorts = {
+    "Narvik Ski Resort": (68.47375268157305, 17.429653561603484),
+    "Strandafjellet Skisenter": (62.399663364662885, 6.899584741440454),
+    "Voss Resort Fjellheisar": (60.66679721890424, 6.4163768467408895),
+    "Myrkdalen Fjellandsby": (60.91609240579905, 6.531733285654033),
+    "Nedre fjellheisstasjon Narvik": (68.48097085721196, 17.40440897292097),
+    "Eikedalen Ski Center AS": (60.48535825973864, 5.921807746740899),
+    "Hemsedal Skisenter": (60.910916204614885, 8.494636927952046),
+    "Rauland Skisenter": (59.81912239767133, 8.161511965529717),
+    "Galdhøpiggen Summer Ski Centre": (61.74877912234984, 8.373904910498657),
+    "Sauda Ski Centre": (59.65347720745357, 6.223121107043404),
+    "Hovden Alpinsenter": (59.59545094991248, 7.326028486460486),
+    "Bjorli Ski": (62.37332305036026, 8.277476069954428)
+}
+
 
 # to get historical data
 region_ids  = {
