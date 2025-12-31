@@ -147,3 +147,20 @@ def date_chunks(start_date, end_date, chunk_days=60):
         chunk_end = min(start + timedelta(days=chunk_days), end)
         yield start.strftime("%Y-%m-%d"), chunk_end.strftime("%Y-%m-%d")
         start = chunk_end + timedelta(days=1)
+
+def add_terrain_weather_interactions(weather_df, terrain_df):
+
+    df = weather_df.merge(
+        terrain_df,
+        on="location",
+        how="left",
+        suffixes=("", "_terrain")
+    )
+
+    df["snow_load_steep"] = df["snowfall_sum"] * df["steep_fraction_35deg"]
+    df["wind_snow_transport"] = df["wind_speed_10m_max"] * df["steep_fraction_30deg"]
+    df["rain_on_snow_risk"] = df["rain_sum"] * (df["mean_elevation"] / 1000)
+    df["temp_elev"] = df["temperature_2m_mean"] * (df["mean_elevation"] / 2000)
+    df["precip_slope_weighted"] = df["precipitation_sum"] * df["mean_slope"]
+
+    return df.drop(columns=terrain_df.columns.difference(["location"]))
