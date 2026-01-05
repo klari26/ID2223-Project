@@ -20,3 +20,10 @@ shapely
 pyproj
 tqdm
 #feldera==0.41
+
+#Requirements for UI
+streamlit
+scipy
+folium
+streamlit-folium
+requests
