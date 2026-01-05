@@ -153,31 +153,31 @@ with tab_sim:
     st.header("Scenario Simulation: Modify Weather Features")
     st.write("Select a resort and adjust the weather features to see how the avalanche prediction changes.")
 
-    # 1️⃣ Select the resort
-    resort_names = resorts_df['location'].tolist()  # Convert Series to list
+    # Select the resort
+    resort_names = resorts_df['location'].tolist()
     selected_resort = st.selectbox("Select Resort", resort_names)
 
-    # 2️⃣ Load model for this resort
+    # Load model for this resort
     model = load_model(selected_resort)
 
-    # 3️⃣ Get latest weather features from Hopsworks
+    # Get latest weather features from Hopsworks
     features_df = weather_fg.read()
-    resort_features = features_df[features_df['location'] == selected_resort].iloc[-1]  # most recent row
+    resort_features = features_df[features_df['location'] == selected_resort].iloc[-1]  
 
-    # 4️⃣ Features for sliders
+    # Features for sliders
     feature_cols = [
         'temperature_2m_mean', 'precipitation_sum', 'rain_sum', 'snowfall_sum',
         'wind_speed_10m_max', 'wind_direction_10m_dominant', 'snow_load_steep',
         'wind_snow_transport', 'rain_on_snow_risk', 'temp_elev', 'precip_slope_weighted'
     ]
 
-    # 5️⃣ Create sliders for each feature with safe ranges
+    # Create sliders for each feature with safe ranges
     user_features = {}
     for col in feature_cols:
         try:
             default_val = float(resort_features[col])
         except (KeyError, TypeError):
-            default_val = 0.0  # fallback if column missing or None
+            default_val = 0.0  # default value if column missing or None
 
         # Ensure slider has valid min < max
         if default_val == 0.0:
@@ -195,10 +195,10 @@ with tab_sim:
             step=0.1
         )
 
-    # 6️⃣ Convert user inputs to DataFrame
+    # Convert user inputs to DataFrame
     user_features_df = pd.DataFrame([user_features])
 
-    # 7️⃣ Predict button
+    # Predict button
     if st.button("Predict Avalanche Risk"):
         prediction = predict(model, user_features_df)
         st.metric(
@@ -206,7 +206,7 @@ with tab_sim:
             value=f"{prediction:.2f}"
         )
 
-        # 8️⃣ Optional interpretation
+        # Interpretation level for prediction
         if prediction >= 0.7:
             st.warning("High avalanche risk!")
         elif prediction >= 0.4:
