@@ -3,23 +3,23 @@ import xgboost as xgb
 import pandas as pd
 import streamlit as st
 import re
+import unicodedata
 
 # Path to local models folder
 MODELS_DIR = "models"
 
 
-def sanitize_filename(name: str) -> str:
-    import re
-    # Replace spaces with underscores, removes special characters.
-    name = name.replace(" ", "_")
-    name = re.sub(r"[^A-Za-z0-9_øæåØÆÅ]", "", name)
-    return name
-
+def sanitize_name(name):
+    # Ignore accents
+    name_ascii = unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore').decode()
+    # Replace anything not a-z, A-Z, 0-9, or _ with underscore
+    name_clean = re.sub(r'[^a-zA-Z0-9_]', '_', name_ascii)
+    return name_clean
 
 @st.cache_resource
 def load_model(resort_name: str) -> xgb.XGBRegressor:
     #Load the XGBRegressor models from the local models folder
-    filename = f"xgb_ordinal_model_{sanitize_filename(resort_name)}.json"
+    filename = f"xgb_ordinal_model_more_features{sanitize_name(resort_name)}.json"
     model_path = os.path.join(MODELS_DIR, filename)
 
     if not os.path.exists(model_path):

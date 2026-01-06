@@ -12,6 +12,9 @@ import os
 st.set_page_config(page_title="Avalanche Risk – Norway", layout="wide")
 
 MODEL_FEATURES = [
+    "warning_level_lag_1", 
+    "warning_level_lag_2",
+    "warning_level_lag_3",
     "temperature_2m_mean",
     "precipitation_sum",
     "rain_sum",
@@ -49,29 +52,32 @@ def connect_hopsworks():
 
 fs = connect_hopsworks()
 
-weather_fg = fs.get_feature_group(
-    name="weather_terrain_sensor",
-    version=2
+fv = fs.get_feature_view(
+    name="avalanche_warning_fv_new_corrected_more_features_and_lags",
+    version=3
 )
 
 # Get latest features per resort
 @st.cache_data
 def get_latest_features():
-    df = weather_fg.read()
+    #inference data
+    batch_data = fv.get_batch_data()
 
     # Ensure datetime
-    df["date"] = pd.to_datetime(df["date"])
-
-    # Latest per location
-    latest_df = (
-        df.sort_values("date")
-          .groupby("location")
-          .tail(1)
-          .set_index("location")
-    )
-
+    batch_data["date"] = pd.to_datetime(batch_data["date"])
+    
+    # Sort by location and date
+    batch_data = batch_data.sort_values(["location", "date"])
+    
+    # Take the last row per location (latest)
+    latest_df = batch_data.groupby("location", as_index=False).last()
+    
+    # Set location as index for easy lookup
+    latest_df = latest_df.set_index("location")
+    
     return latest_df
 
+# Usage
 latest_features = get_latest_features()
 
 
@@ -133,17 +139,21 @@ with tab_map:
 with tab_details:
     st.header("Latest Weather Features")
 
-    resort = st.selectbox(
-        "Select resort",
-        resorts_df["location"].unique()
-    )
+    # Convert all numeric columns to float
+    numeric_cols = [
+        'warning_level_lag_1', 'warning_level_lag_2', 'warning_level_lag_3',
+        'temperature_2m_mean', 'precipitation_sum', 'rain_sum', 'snowfall_sum',
+        'wind_speed_10m_max', 'wind_direction_10m_dominant', 'snow_load_steep',
+        'wind_snow_transport', 'rain_on_snow_risk', 'temp_elev', 'precip_slope_weighted'
+    ]
 
-    if resort in latest_features.index:
-        st.dataframe(
-            latest_features.loc[resort, MODEL_FEATURES].to_frame("value")
-        )
-    else:
-        st.warning("No features found for this resort.")
+    # Rorce errors to NaN if anything invalid
+    latest_features[numeric_cols] = latest_features[numeric_cols].apply(pd.to_numeric, errors='coerce')
+
+    # Fill NaN with 0 
+    latest_features[numeric_cols] = latest_features[numeric_cols].fillna(0)
+
+    st.dataframe(latest_features)
 
 # ==========================================================
 # TAB 3 – Scenario Simulation
@@ -160,12 +170,9 @@ with tab_sim:
     # Load model for this resort
     model = load_model(selected_resort)
 
-    # Get latest weather features from Hopsworks
-    features_df = weather_fg.read()
-    resort_features = features_df[features_df['location'] == selected_resort].iloc[-1]  
-
     # Features for sliders
     feature_cols = [
+        'warning_level_lag_1', 'warning_level_lag_2', 'warning_level_lag_3', 
         'temperature_2m_mean', 'precipitation_sum', 'rain_sum', 'snowfall_sum',
         'wind_speed_10m_max', 'wind_direction_10m_dominant', 'snow_load_steep',
         'wind_snow_transport', 'rain_on_snow_risk', 'temp_elev', 'precip_slope_weighted'
@@ -175,7 +182,7 @@ with tab_sim:
     user_features = {}
     for col in feature_cols:
         try:
-            default_val = float(resort_features[col])
+            default_val = float(latest_features[col])
         except (KeyError, TypeError):
             default_val = 0.0  # default value if column missing or None
 
@@ -207,9 +214,9 @@ with tab_sim:
         )
 
         # Interpretation level for prediction
-        if prediction >= 0.7:
+        if prediction >= 2:
             st.warning("High avalanche risk!")
-        elif prediction >= 0.4:
+        elif prediction >= 1:
             st.info("Moderate avalanche risk.")
         else:
             st.success("Low avalanche risk.")
