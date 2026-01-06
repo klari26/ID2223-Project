@@ -1,4 +1,8 @@
 hopsworks[python,great-expectations]
+streamlit
+folium
+streamlit-folium
+requests
 pydantic-settings>=2.6.1
 load_dotenv
 geopy==2.4.1
@@ -6,7 +10,7 @@ openmeteo-requests
 requests-cache==1.2.0
 retry-requests==2.0.0
 xgboost==2.0.3
-scikit-learn==1.2.2
+scikit-learn
 matplotlib==3.8.3
 plotly
 seaborn
@@ -19,11 +23,3 @@ rasterio
 shapely
 pyproj
 tqdm
-#feldera==0.41
-
-#Requirements for UI
-streamlit
-scipy
-folium
-streamlit-folium
-requests
