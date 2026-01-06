@@ -1,4 +1,4 @@
-<img width="426" height="395" alt="image" src="https://github.com/user-attachments/assets/96fb8846-96ab-42ce-926b-f3ab26fa10b1" /># ID2223-Project: Norway Avalanche Risk Forecast 🏔️🇳🇴
+# ID2223-Project: Norway Avalanche Risk Forecast 🏔️🇳🇴
 This project implements a scalable machine learning pipeline to predict real-time avalanche risks for major ski resorts in Norway. It utilizes **Hopsworks** as a Feature Store and Model Registry, **XGBoost** for prediction models, and **Streamlit** for an interactive user interface.
 
 ## Project Overview
