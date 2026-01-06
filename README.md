@@ -9,6 +9,9 @@ The goal of this system is to predict the avalanche danger level (0-5 scale: 0-N
 * **Model:** An individual XGBoost classifier or regressor is trained for **each** resort to capture local microclimate patterns.  
 * **Interface:** A Streamlit application offers interactive map visualizations and a “Scenario Simulation” feature.
 
+## Streamlit UI
+https://ahuaqmcwy9diaouzzwthns.streamlit.app/
+
 ## Architecture & Pipelines
 The project consists of three main stages:
 
