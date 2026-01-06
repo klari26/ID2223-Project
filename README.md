@@ -1,8 +1,8 @@
-# ID2223-Project: Norway Avalanche Risk Forecast 🏔️🇳🇴
+<img width="426" height="395" alt="image" src="https://github.com/user-attachments/assets/96fb8846-96ab-42ce-926b-f3ab26fa10b1" /># ID2223-Project: Norway Avalanche Risk Forecast 🏔️🇳🇴
 This project implements a scalable machine learning pipeline to predict real-time avalanche risks for major ski resorts in Norway. It utilizes **Hopsworks** as a Feature Store and Model Registry, **XGBoost** for prediction models, and **Streamlit** for an interactive user interface.
 
 ## Project Overview
-The goal of this system is to predict the avalanche danger level (0-4 scale) based on weather forecasts, historical warnings, and static terrain analysis. 
+The goal of this system is to predict the avalanche danger level (0-5 scale: 0-Not assessed; 1-Small; 2-Moderate; 3-Significant; 4-Large; 5-Very large) based on weather forecasts, historical warnings, and static terrain analysis. 
 
 ### Key Components
 * **Feature Store:** Hopsworks manages both historical and daily feature data.  
