@@ -1,19 +1,19 @@
 # ID2223-Project: Norway Avalanche Risk Forecast 🏔️🇳🇴
-This project implements a scalable machine learning pipeline to predict real-time avalanche risks for major ski resorts in Norway. It utilizes **Hopsworks** as a Feature Store and Model Registry, **XGBoost** for prediction models, and **Streamlit** for an interactive user interface.
+This project implements a scalable machine learning pipeline to predict real-time avalanche risks for major ski resorts in Norway. It utilizes Hopsworks as a Feature Store and Model Registry, XGBoost for prediction models, and Streamlit for an interactive user interface.
 
 ## Project Overview
-The goal of this system is to predict the avalanche danger level (0-5 scale: 0-Not assessed; 1-Small; 2-Moderate; 3-Significant; 4-Large; 5-Very large) based on weather forecasts, historical warnings, and static terrain analysis. 
+The goal of this system is to predict the avalanche danger level (0-4 scale) based on weather forecasts, historical warnings, and static terrain analysis. 
 
 ### Key Components
 * **Feature Store:** Hopsworks manages both historical and daily feature data.  
-* **Model:** An individual XGBoost classifier or regressor is trained for **each** resort to capture local microclimate patterns.  
-* **Interface:** A Streamlit application offers interactive map visualizations and a “Scenario Simulation” feature.
+* **Model:** An individual XGBoost classifier or regressor is trained for each resort to capture local microclimate patterns.  
+* **Interface:** A Streamlit app that allows users to simulate weather conditions and receive immediate risk predictions using the registered models.
 
 ## Streamlit UI
 https://ahuaqmcwy9diaouzzwthns.streamlit.app/
 
 ## Architecture & Pipelines
-The project consists of three main stages:
+The project consists of four main stages:
 
 ### 1\. Data Ingestion & Backfill (`feature_backfill.ipynb`)
 This notebook initializes the system by processing historical data (from \~2020 to present):
@@ -33,6 +33,15 @@ Designed to run on a schedule:
 * **Hyperparameter Tuning**: Applies RandomizedSearchCV with TimeSeriesSplit to tune parameters such as n_estimators, max_depth, and learning_rate.
 * **Model Registry**: Stores the best-performing model for each resort in the Hopsworks Model Registry.
 
+**Performance:** All trained models demonstrate high reliability, consistently achieving an accuracy score higher than 90% and a Mean Squared Error (MSE) lower than 0.06 across all monitored locations.
+
+### 4\. Batch Inference (`model_inference.ipynb`)
+This notebook handles automated daily predictions:
+* **Retrieval:** Loads the batch inference data from the Feature View.
+* **Model Loading:** Downloads the specific model for every resort from the registry.
+* **Prediction:** Generates predictions for the next 7 days.
+* **Storage:** Saves the predictions back to Hopsworks as feature groups (e.g., `aq_predictions_narvik_ski_resort`) for downstream consumption.
+
 ##  Feature Engineering
 The project creates interaction features to capture key physical processes behind avalanche formation:
 * **`snow_load_steep`**: Combines total snowfall with the proportion of terrain steeper than 30°.  
@@ -45,16 +54,23 @@ The project creates interaction features to capture key physical processes behin
 The application serves as the frontend for the project.
 
 ### Features:
-1. **Map View:** An interactive Folium map displaying Norwegian ski resorts, with markers color‑coded (Green/Orange/Red) according to the predicted avalanche risk.
-![Map view](map.png)
+1. **Map View:**
+This tab provides a geospatial overview of avalanche risks, including a Folium map that displays markers for all supported ski resorts in Norway. It provides a 7-Day Forecast Slider that allows users to view predictions for the upcoming week (Day 1 represents tomorrow, up to Day 7). Also, the map includes risk indicators which are color-coded based on the predicted warning level (Green for low, Orange for medium, Red for high risk).
+![Map view](UI_evidence/map.png)
 
-2. **Feature Details:** A panel showing the specific weather and terrain features that drive the model’s prediction for the selected resort.  
-![Feature Details](features.png)
+2. **Feature Details per Resort:** This tab allows an overview of the data driving the predictions:
+* **Resort Selection:** Users can select a specific resort
+* **Detailed Forecasts:** Displays a dataframe containing the predictions along with the specific weather (wind, temperature, precipitation) and terrain conditions for the next 7 days.
+* **Risk Graphics:** A line graph visualizes the predicted avalanche risk trend over the 7-day period, allowing users to quickly identify upcoming high-risk days.
+![Feature Details](UI_evidence/tab2.png)
 
-3. **Scenario Simulation:** A tool where the user can adjust feature sliders (e.g., `snowfall_sum`, `wind_speed`) and instantly observe how the predicted avalanche risk changes for that resort. This tool can be used to predict multiple scenarios in case weather conditions variate.
-![Scenario Simulation](scenario_simulation.png)
 
 ## 🛠️ Setup & Installation
+
+### Prerequisites
+* Python 3.8+
+* A Hopsworks API Key.
+* Digital Terrain Model (DTM) files (if running the backfill).
 
 ### 1\. Install Dependencies
 ```bash
@@ -71,6 +87,7 @@ HOPSWORKS_API_KEY=your_api_key_here
 1.  **Backfill:** Run `feature_backfill.ipynb` to populate the feature store.
 2.  **Daily Update:** Run `daily_feature_pipeline.ipynb` to add today's data.
 3.  **Train Models:** Run `model_training.ipynb` to train and register the models.
+4.  **Batch Predict:** Run `model_inference.ipynb` to generate daily forecasts.
 
 ### 4\. Running the App
 ```bash
