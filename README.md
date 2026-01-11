@@ -42,6 +42,9 @@ This notebook handles automated daily predictions:
 * **Prediction:** Generates predictions for the next 7 days.
 * **Storage:** Saves the predictions back to Hopsworks as feature groups (e.g., `aq_predictions_narvik_ski_resort`) for downstream consumption.
 
+<img width="1727" height="906" alt="image" src="https://github.com/user-attachments/assets/d16ab314-2658-4bc3-bec8-8b7e7850caba" />
+
+
 ##  Feature Engineering
 The project creates interaction features to capture key physical processes behind avalanche formation:
 * **`snow_load_steep`**: Combines total snowfall with the proportion of terrain steeper than 30°.  
