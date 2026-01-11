@@ -1,7 +1,7 @@
-hopsworks[python,great-expectations]
 streamlit
 folium
 streamlit-folium
+hopsworks[python,great-expectations]
 requests
 pydantic-settings>=2.6.1
 load_dotenv
