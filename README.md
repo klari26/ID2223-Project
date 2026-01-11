@@ -9,6 +9,10 @@ The goal of this system is to predict the avalanche danger level (0-4 scale) bas
 * **Model:** An individual XGBoost classifier or regressor is trained for each resort to capture local microclimate patterns.  
 * **Interface:** A Streamlit app that allows users to simulate weather conditions and receive immediate risk predictions using the registered models.
 
+
+## Streamlit UI
+https://ahuaqmcwy9diaouzzwthns.streamlit.app/
+
 ## Technologies Used
 This project uses a contemporary MLOps stack to manage geospatial data, perform feature engineering, and deploy models:
  * **Core & MLOps:**
@@ -31,10 +35,6 @@ This project uses a contemporary MLOps stack to manage geospatial data, perform 
       * **Folium:** Used for rendering the interactive map of Norway with color-coded risk markers.
       * **Matplotlib:** Used for generating forecast trend graphs in the UI.
 
-
-
-## Streamlit UI
-https://ahuaqmcwy9diaouzzwthns.streamlit.app/
 
 ## Architecture & Pipelines
 The project consists of four main stages:
