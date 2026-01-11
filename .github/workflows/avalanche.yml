@@ -33,6 +33,7 @@ jobs:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
           ipython daily_feature_pipeline.ipynb
+          ipython model_inference.ipynb
       - name: github pages publish
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
