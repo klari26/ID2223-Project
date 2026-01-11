@@ -10,6 +10,8 @@ import os
 import re
 import unicodedata
 
+import matplotlib.pyplot as plt
+
 # Setting up Hopsworks
 st.set_page_config(page_title="Avalanche Risk – Norway", layout="wide")
 
@@ -37,9 +39,9 @@ def sanitize_fg_name(resort_name: str):
 
     # Lowercase and replace spaces with underscores
     name_ascii = name_ascii.lower()
-    name_ascii = re.sub(r'\s+', '_', name_ascii)  # spaces → _
-    name_ascii = re.sub(r'[^a-z0-9_]', '', name_ascii)  # remove other special chars
-    name_ascii = re.sub(r'_+', '_', name_ascii)  # collapse multiple underscores
+    name_ascii = re.sub(r'\s+', '_', name_ascii) 
+    name_ascii = re.sub(r'[^a-z0-9_]', '', name_ascii)  
+    name_ascii = re.sub(r'_+', '_', name_ascii) 
     return f"aq_predictions_{name_ascii}"[:63]  # max 63 chars
 
 # Load resorts from CSV
@@ -88,29 +90,6 @@ def load_forecasts(resort_names):
 resort_names = resorts_df['location'].tolist()
 forecasts = load_forecasts(resort_names)
 
-# Get latest features per resort
-@st.cache_data
-def get_latest_features():
-    #inference data
-    batch_data = fv.get_batch_data()
-
-    # Ensure datetime
-    batch_data["date"] = pd.to_datetime(batch_data["date"])
-    
-    # Sort by location and date
-    batch_data = batch_data.sort_values(["location", "date"])
-    
-    # Take the last row per location (latest)
-    latest_df = batch_data.groupby("location", as_index=False).last()
-    
-    # Set location as index for easy lookup
-    latest_df = latest_df.set_index("location")
-    
-    return latest_df
-
-# Usage
-latest_features = get_latest_features()
-
 
 # UI
 st.title("Norway Avalanche Forecast 🏔️🇳🇴")
@@ -124,10 +103,10 @@ tab_map, tab_details = tabs
 with tab_map:
     st.header("Avalanche Risk Map")
     st.info("High risk avalanche zones are marked in red on the map.")
-    st.write("Select the day to visualize the prediction (1 = tomorrow, 7 = 7 days ahead).")
+    st.write("Select the day to visualize the prediction (1 = today, 7 = 7 days ahead).")
 
     # Select day
-    selected_day = st.slider("Select Day", min_value=1, max_value=7, value=0, step=1)
+    selected_day = st.slider("Select Day", min_value=1, max_value=7, value=1, step=1)
 
     m = folium.Map(location=[64.5, 11], zoom_start=5)
 
@@ -144,7 +123,7 @@ with tab_map:
 
         # One row per day
         pred_row = day_df.iloc[0]
-        prediction = float(pred_row['warning_level_lag_1'])
+        prediction = float(pred_row['predicted_risk_value'])
 
         color = "red" if prediction >= 2 else "orange" if prediction >= 1 else "green"
 
@@ -179,14 +158,12 @@ with tab_details:
 
     if selected_resort in forecasts:
         resort_df = forecasts[selected_resort].copy()
-        st.dataframe(resort_df)
-
-        # Plot the 7-day predictions at the bottom
-        import matplotlib.pyplot as plt
+        st.dataframe(resort_df.head(7))
 
         # Aggregate risk per day (simple example: mean of warning_level_lags)
-        resort_df['predicted_risk'] = resort_df[['warning_level_lag_1', 'warning_level_lag_2', 'warning_level_lag_3']].mean(axis=1)
+        resort_df['predicted_risk'] = resort_df[['predicted_risk_value']].head(7).mean(axis=1)
 
+        # Plot the 7-day predictions at the bottom
         fig, ax = plt.subplots(figsize=(4,2))
 
         ax.plot(
