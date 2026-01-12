@@ -60,7 +60,11 @@ Designed to run on a schedule:
 
 **Performance:** All trained models demonstrate high reliability, consistently achieving an accuracy score higher than 90% and a Mean Squared Error (MSE) lower than 0.06 across all monitored locations.
 
-**Evaluation:** For a more detailed view, we also report the per-resort confusion matrices resulting from training the XGBoost Classifier and Regressor. This helped us assess . The image below is an example:
+**Evaluation:** For a more detailed view, we also report the per-resort confusion matrices resulting from training the XGBoost Classifier and Regressor. This helped us assess not only overall accuracy, but also the distribution and magnitude of prediction errors across the ordinal rating scale, revealing whether misclassifications tend to occur between nearby classes. The image below is an example:
+
+<img width="3600" height="1500" alt="image" src="https://github.com/user-attachments/assets/7f6b664d-b7cf-406c-aa82-3956b1d8d935" />
+
+Overall, both approaches make good predictors, where wrong predictions do not significantly deviate from the true values.
 
 
 ### 4\. Batch Inference (`model_inference.ipynb`)
