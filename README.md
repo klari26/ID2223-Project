@@ -94,7 +94,8 @@ The application serves as the frontend for the project.
 ### Features:
 1. **Map View:**
 This tab provides a geospatial overview of avalanche risks, including a Folium map that displays markers for all supported ski resorts in Norway. It provides a 7-Day Forecast Slider that allows users to view predictions for the upcoming week (Day 1 represents tomorrow, up to Day 7). Also, the map includes risk indicators which are color-coded based on the predicted warning level (Green for low, Orange for medium, Red for high risk).
-![Map view](UI_evidence/map.png)
+<img width="2783" height="1222" alt="image" src="https://github.com/user-attachments/assets/1f294850-036c-4d79-9fd6-8bc67976e979" />
+
 
 2. **Feature Details per Resort:** This tab allows an overview of the data driving the predictions:
 * **Resort Selection:** Users can select a specific resort
