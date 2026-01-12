@@ -1,8 +1,8 @@
 # ID2223-Project: Norway Avalanche Risk Forecast 🏔️🇳🇴
-This project implements a scalable machine learning pipeline to predict real-time avalanche risks for major ski resorts in Norway. It utilizes Hopsworks as a Feature Store and Model Registry, XGBoost for prediction models, and Streamlit for an interactive user interface.
+This project implements a scalable machine learning pipeline to predict avalanche risks for major ski resorts in Norway. It utilizes Hopsworks as a Feature Store and Model Registry, XGBoost for prediction models, and Streamlit for an interactive user interface.
 
 ## Project Overview
-The goal of this system is to predict the avalanche danger level (0-4 scale) based on weather forecasts, historical warnings, and static terrain analysis. 
+The goal of this system is to predict the avalanche danger level (0-4 scale: 0-Not rated; 1-Low avalanche danger; 2-Moderate avalanche danger; 3-Considerable avalanche danger; 4-High avalanche danger) based on weather forecasts, historical warnings, and static terrain analysis. 
 
 ### Key Components
 * **Feature Store:** Hopsworks manages both historical and daily feature data.  
@@ -45,7 +45,7 @@ This notebook is run daily to initialize the system by processing historical dat
   * **Weather Data:** Retrieves daily weather metrics (temp, wind, precip) via Open-Meteo.
   * **Terrain Analysis:** Processes Digital Terrain Models (DTM/GeoTIFFs) to calculate slope, elevation, and steepness fractions for every resort.
   * **Feature Groups:** Data is uploaded to the Hopsworks Feature Store as `avalanche_warning`, `weather_terrain_sensor`, and `terrain_data`.
-  * 
+
 ### 2\. Daily Feature Pipeline (`daily_feature_pipeline.ipynb`)
 Designed to run on a schedule:
   * Fetches the forecast for the current day and the avalanche warning for the current day.
@@ -53,7 +53,7 @@ Designed to run on a schedule:
   * Updates the Feature Store.
 
 ### 3\. Model Training (`model_training.ipynb`)R
- * ** Feature View**: Combines weather, terrain, and warning datasets into a unified feature view.
+ * **Feature View**: Combines weather, terrain, and warning datasets into a unified feature view.
  * **Training Strategy**: Loops through each resort defined in locations.py and trains a dedicated XGBoost model tailored to that location.
  * **Hyperparameter Tuning**: Applies RandomizedSearchCV with TimeSeriesSplit to tune parameters such as n_estimators, max_depth, and learning_rate.
  * **Model Registry**: Stores the best-performing model for each resort in the Hopsworks Model Registry.
@@ -69,7 +69,8 @@ This notebook handles automated daily predictions:
 
 ### System Architecture
 The following diagram illustrates the system architecture in detail:
-<img width="1727" height="906" alt="image" src="https://github.com/user-attachments/assets/d16ab314-2658-4bc3-bec8-8b7e7850caba" />
+<img width="1868" height="1004" alt="image" src="https://github.com/user-attachments/assets/b60d735e-b944-46f3-bb0e-411ad35a8985" />
+
 
 
 ##  Feature Engineering
