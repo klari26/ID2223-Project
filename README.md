@@ -35,6 +35,9 @@ Designed to run on a schedule:
 
 **Performance:** All trained models demonstrate high reliability, consistently achieving an accuracy score higher than 90% and a Mean Squared Error (MSE) lower than 0.06 across all monitored locations.
 
+**Evaluation:** For a more detailed view, we also report the per-resort confusion matrices resulting from training the XGBoost Classifier and Regressor. This helped us assess . The image below is an example:
+
+
 ### 4\. Batch Inference (`model_inference.ipynb`)
 This notebook handles automated daily predictions:
 * **Retrieval:** Loads the batch inference data from the Feature View.
